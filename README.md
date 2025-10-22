@@ -1,61 +1,123 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🚗 AutoHub — Car Factory Management System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+**Author:** Oleksii Hubkin  
+**Course:** Advanced Web Development
+**Date:** October 2025
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 📘 Overview
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+AutoHub is a Laravel-based web application to manage factories, cars, and dealers.  
+It demonstrates authentication, CRUD functionality, and many-to-many database relationships using modern Laravel features.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## ⚙️ Features
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+-   User authentication (login, register, logout)
+-   CRUD for **Factories**, **Cars**, and **Dealers**
+-   Dashboard showing total counts
+-   FormRequest validation and flash messages
+-   Many-to-Many: Factories ↔ Dealers (assign dealers to factories)
+-   Clean Bootstrap/Tailwind UI
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 🧱 Database Structure
 
-## Laravel Sponsors
+| Table          | Description                                  |
+| -------------- | -------------------------------------------- |
+| factories      | Stores all car factories                     |
+| cars           | Cars linked to factories                     |
+| dealers        | Dealer information                           |
+| dealer_factory | Pivot table connecting factories and dealers |
+| users          | Authenticated system users                   |
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+**Relationships:**
 
-### Premium Partners
+-   Factory → Car = One-to-Many
+-   Factory ↔ Dealer = Many-to-Many
+-   User = system administrator
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+---
 
-## Contributing
+## 🧩 Tech Stack
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+-   **Backend:** Laravel 10 (PHP 8+)
+-   **Frontend:** Blade, Bootstrap 5, Tailwind CSS
+-   **Database:** MySQL
+-   **Authentication:** Laravel Breeze
+-   **Server:** php artisan serve / XAMPP
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## 🚀 Installation & Setup
 
-## Security Vulnerabilities
+### 1️⃣ Clone or download the project
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+```bash
+git clone https://github.com/yourusername/autohub.git
+cd autohub
 
-## License
+2️⃣ Install dependencies
+bash
+Copy code
+composer install
+npm install
+npm run dev
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+3️⃣ Set up environment
+bash
+Copy code
+cp .env.example .env
+php artisan key:generate
+Then update your database credentials in .env.
+
+4️⃣ Run migrations
+bash
+Copy code
+php artisan migrate
+
+5️⃣ Start local server
+bash
+Copy code
+php artisan serve
+Then open in your browser:
+http://127.0.0.1:8000
+
+🧮 Dashboard
+After login, the dashboard displays:
+
+Number of factories 🏭
+
+Number of cars 🚗
+
+Number of dealers 🤝
+
+🧠 MVC Structure
+Model: Factory, Car, Dealer (with relationships)
+
+View: Blade templates with shared layout (Navbar + Footer)
+
+Controller: CRUD operations with validation
+
+🧾 Notes
+All test data is entered manually (no Faker).
+
+Factories can assign multiple dealers via a pivot table.
+
+Flash messages confirm success or validation errors.
+
+📊 ER Diagram (text)
+bash
+Copy code
+factories (id, name, location)
+cars (id, make, model, year, color, price, factory_id)
+dealers (id, name, phone, email)
+dealer_factory (id, dealer_id, factory_id)
+users (id, name, email, password)
+
+Factory 1—∞ Car
+Factory ∞—∞ Dealer
+```
