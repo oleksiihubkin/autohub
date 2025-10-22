@@ -109,15 +109,15 @@ Factories can assign multiple dealers via a pivot table.
 
 Flash messages confirm success or validation errors.
 
-📊 ER Diagram (text)
-bash
-Copy code
-factories (id, name, location)
-cars (id, make, model, year, color, price, factory_id)
-dealers (id, name, phone, email)
-dealer_factory (id, dealer_id, factory_id)
-users (id, name, email, password)
+📊 ER Diagram
+<p align="center">
+  <img src="https://raw.githubusercontent.com/oleksiihubkin/autohub/main/resources/images/er_diagram.png" alt="AutoHub ER Diagram" width="600">
+</p>
 
-Factory 1—∞ Car
-Factory ∞—∞ Dealer
+### **Diagram Description**
+- **Factory (1) → Car (∞)**
+  Each factory produces many cars.
+- **Factory (∞) ↔ Dealer (∞)**
+  A factory can work with many dealers, and each dealer can represent multiple factories.
+- **Pivot Table:** `dealer_factory` connects both entities via foreign keys.
 ```
