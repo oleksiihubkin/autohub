@@ -11,9 +11,12 @@ use App\Http\Requests\UpdateFactoryRequest;
 
 class FactoryController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    private function ensureAdmin(): void
+{
+    if (!auth()->check() || auth()->user()->role !== 'admin') {
+        abort(403, 'Only admin can access this section.');
+    }
+}
     public function index()
 {
     $factories = Factory::withCount('cars')->paginate(10);
@@ -25,6 +28,7 @@ class FactoryController extends Controller
      */
     public function create()
     {
+        $this->ensureAdmin();
         return view('factories.create');
     }
 
@@ -33,6 +37,7 @@ class FactoryController extends Controller
      */
     public function store(StoreFactoryRequest $request)
 {
+    $this->ensureAdmin();
     Factory::create($request->validated());
     return redirect()->route('factories.index')->with('success', 'Factory created successfully!');
 }
@@ -51,6 +56,7 @@ class FactoryController extends Controller
      */
     public function edit(Factory $factory)
 {
+    $this->ensureAdmin();
     $dealers = \App\Models\Dealer::all();
     return view('factories.edit', compact('factory', 'dealers'));
 }
@@ -60,13 +66,17 @@ class FactoryController extends Controller
      */
     public function update(Request $request, Factory $factory)
 {
+    $this->ensureAdmin();
     $data = $request->validate([
         'name' => 'required|string|max:255',
         'location' => 'required|string|max:255',
         'dealers' => 'array' // list of selected dealers
     ]);
 
-    $factory->update($data);
+    $factory->update([
+            'name'     => $data['name'],
+            'location' => $data['location'],
+        ]);
 
     // Update factory-dealer relationship (pivot table)
     $factory->dealers()->sync($request->input('dealers', []));
@@ -79,6 +89,7 @@ class FactoryController extends Controller
      */
     public function destroy(Factory $factory)
     {
+        $this->ensureAdmin();
         $factory->delete();
 
         return redirect()->route('factories.index')->with('success', 'Factory deleted successfully!');

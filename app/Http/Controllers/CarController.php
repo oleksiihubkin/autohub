@@ -14,7 +14,7 @@ class CarController extends Controller
     // Show all cars
     public function index()
 {
-    $cars = Car::with('factory')->paginate(10);
+    $cars = Car::with('factory')->orderBy('id','desc')->paginate(10);
     return view('cars.index', compact('cars'));
 }
 

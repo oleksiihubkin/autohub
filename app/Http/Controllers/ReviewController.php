@@ -25,21 +25,19 @@ class ReviewController extends Controller
 
     public function create()
     {
-        $this->authorize('create', Review::class);
-
-        // Под список машин для селекта
+        // авторизация уже обеспечена middleware 'auth' в routes/web.php
+        // подгружаем список машин для селекта
         $cars = Car::orderBy('id','desc')->get(['id','make','model']);
         return view('reviews.create', compact('cars'));
     }
 
     public function store(StoreReviewRequest $request)
     {
-        $this->authorize('create', Review::class);
-
         $data = $request->validated();
         $data['user_id'] = auth()->id();
 
         $review = Review::create($data);
+
         return redirect()
             ->route('reviews.show', $review)
             ->with('success', 'Review created');
@@ -47,15 +45,14 @@ class ReviewController extends Controller
 
     public function edit(Review $review)
     {
-        $this->authorize('update', $review);
+        // для CA1 можно полагаться на Blade @can, здесь без authorize()
         return view('reviews.edit', compact('review'));
     }
 
     public function update(UpdateReviewRequest $request, Review $review)
     {
-        $this->authorize('update', $review);
-
         $review->update($request->validated());
+
         return redirect()
             ->route('reviews.show', $review)
             ->with('success', 'Review updated');
@@ -63,9 +60,8 @@ class ReviewController extends Controller
 
     public function destroy(Review $review)
     {
-        $this->authorize('delete', $review);
-
         $review->delete();
+
         return redirect()
             ->route('reviews.index')
             ->with('success', 'Review deleted');
