@@ -12,28 +12,39 @@ use Illuminate\Support\Str;
 class UserFactory extends Factory
 {
     /**
-     * The current password being used by the factory.
+     * The cached password value so the factory does not hash
+     * "password" repeatedly for each generated user.
      */
     protected static ?string $password;
 
     /**
-     * Define the model's default state.
+     * Define the default attributes for the User model.
      *
      * @return array<string, mixed>
      */
     public function definition(): array
     {
         return [
+            // Random user name
             'name' => fake()->name(),
+
+            // Unique, safe email address
             'email' => fake()->unique()->safeEmail(),
+
+            // Mark email as verified by default
             'email_verified_at' => now(),
+
+            // Password is hashed once and reused for all factory instances
             'password' => static::$password ??= Hash::make('password'),
+
+            // Random remember token for "remember me" functionality
             'remember_token' => Str::random(10),
         ];
     }
 
     /**
-     * Indicate that the model's email address should be unverified.
+     * Make the user have an unverified email.
+     * Useful for testing behavior related to email verification.
      */
     public function unverified(): static
     {

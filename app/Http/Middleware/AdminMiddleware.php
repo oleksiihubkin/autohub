@@ -10,17 +10,20 @@ class AdminMiddleware
 {
     /**
      * Handle an incoming request.
+     *
+     * This middleware ensures that the user is authenticated
+     * and has the 'admin' role before accessing protected routes.
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Пользователь должен быть залогинен и иметь роль admin
+        // User must be logged in AND must have the 'admin' role
         if (!auth()->check() || auth()->user()->role !== 'admin') {
-            // Можно вернуть 403 или редирект на главную
+            // Block access with HTTP 403 Forbidden
             abort(403, 'Only admin can access this route.');
-            // или:
-            // return redirect()->route('dashboard')->with('error','Admin only');
+
         }
 
+        // Allow request to proceed further
         return $next($request);
     }
 }

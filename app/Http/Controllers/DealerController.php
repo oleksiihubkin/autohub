@@ -7,10 +7,15 @@ use Illuminate\Http\Request;
 use App\Http\Requests\StoreDealerRequest;
 use App\Http\Requests\UpdateDealerRequest;
 
+/**
+ * Controller responsible for handling CRUD operations for Dealers.
+ * Each action is supported by dedicated Form Request validation.
+ */
 class DealerController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a list of all dealers.
+     * No pagination is required because the dataset is expected to be small.
      */
     public function index()
     {
@@ -19,7 +24,7 @@ class DealerController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new dealer.
      */
     public function create()
     {
@@ -27,25 +32,30 @@ class DealerController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created dealer in the database.
+     * Uses StoreDealerRequest for validation.
      */
     public function store(StoreDealerRequest $request)
-{
-    Dealer::create($request->validated());
-    return redirect()->route('dealers.index')->with('success', 'Dealer added successfully.');
-}
+    {
+        Dealer::create($request->validated());
+
+        return redirect()
+            ->route('dealers.index')
+            ->with('success', 'Dealer added successfully.');
+    }
 
     /**
-     * Display the specified resource.
+     * Display a single dealer.
+     * Loads the factories connected to this dealer (many-to-many relationship).
      */
     public function show(Dealer $dealer)
     {
-        $dealer->load('factories');
+        $dealer->load('factories'); // eager load related factories
         return view('dealers.show', compact('dealer'));
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for editing an existing dealer.
      */
     public function edit(Dealer $dealer)
     {
@@ -53,22 +63,27 @@ class DealerController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update an existing dealer in the database.
+     * Uses UpdateDealerRequest for validation.
      */
     public function update(UpdateDealerRequest $request, Dealer $dealer)
-{
-    $dealer->update($request->validated());
+    {
+        $dealer->update($request->validated());
 
-    return redirect()->route('dealers.index')->with('success', 'Dealer updated successfully.');
-}
+        return redirect()
+            ->route('dealers.index')
+            ->with('success', 'Dealer updated successfully.');
+    }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the dealer from the database.
      */
     public function destroy(Dealer $dealer)
     {
         $dealer->delete();
-        return redirect()->route('dealers.index')->with('success', 'Dealer deleted successfully.');
+
+        return redirect()
+            ->route('dealers.index')
+            ->with('success', 'Dealer deleted successfully.');
     }
 }
-

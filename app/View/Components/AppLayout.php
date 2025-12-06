@@ -8,7 +8,11 @@ use Illuminate\View\View;
 class AppLayout extends Component
 {
     /**
-     * Get the view / contents that represents the component.
+     * Render the layout component.
+     *
+     * This method returns the Blade view used as the main
+     * application layout. Components like <x-app-layout>
+     * will wrap their content inside this layout.
      */
     public function render(): View
     {

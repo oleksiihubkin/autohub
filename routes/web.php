@@ -12,34 +12,35 @@ use App\Models\Factory;
 use App\Models\Dealer;
 
 /*
-|--------------------------------------------------------------------------
 | Home page
-|--------------------------------------------------------------------------
+| Public landing page of the application.
 */
 Route::get('/', function () {
     return view('welcome');
 });
 
 /*
-|--------------------------------------------------------------------------
 | Auth-only routes (profile + CRUD)
-|--------------------------------------------------------------------------
+| These routes require the user to be authenticated.
+| Admin permissions are checked inside controllers when needed.
 */
 Route::middleware('auth')->group(function () {
-    // Profile
+
+    // User profile management
     Route::get('/profile',  [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile',[ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile',[ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Reviews CRUD (index/show are public below)
+    // Reviews — authenticated users can create/edit/delete
+    // Index + show remain public (defined below)
     Route::resource('reviews', ReviewController::class)->except(['index', 'show']);
 
-    // Cars / Factories / Dealers CRUD (index/show are public below)
+    // Cars / Factories / Dealers — CRUD except public listing/show
     Route::resource('cars', CarController::class)->except(['index', 'show']);
     Route::resource('factories', FactoryController::class)->except(['index', 'show']);
     Route::resource('dealers', DealerController::class)->except(['index', 'show']);
 
-    // Assign dealers to factory (admin logic проверяем в контроллере)
+    // Assign dealers to a factory (admin check is inside the controller)
     Route::post(
         '/factories/{factory}/assign-dealers',
         [FactoryController::class, 'assignDealers']
@@ -47,11 +48,11 @@ Route::middleware('auth')->group(function () {
 });
 
 /*
-|--------------------------------------------------------------------------
 | Public resources (index + show)
-| !!! They must go AFTER auth group so that /factories/create
-|     не перехватывался маршрутом /factories/{factory}.
-|--------------------------------------------------------------------------
+| Must appear AFTER the auth-group to avoid route conflicts such as:
+| /factories/create being interpreted as /factories/{factory}.
+|
+| These routes allow guests to browse cars, factories, dealers, reviews.
 */
 Route::resource('cars', CarController::class)->only(['index', 'show']);
 Route::resource('factories', FactoryController::class)->only(['index', 'show']);
@@ -59,9 +60,8 @@ Route::resource('dealers', DealerController::class)->only(['index', 'show']);
 Route::resource('reviews', ReviewController::class)->only(['index', 'show']);
 
 /*
-|--------------------------------------------------------------------------
 | Dashboard (auth + verified)
-|--------------------------------------------------------------------------
+| Simple dashboard that displays basic statistics.
 */
 Route::get('/dashboard', function () {
     $carsCount      = Car::count();
@@ -72,8 +72,6 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 /*
-|--------------------------------------------------------------------------
-| Auth scaffolding
-|--------------------------------------------------------------------------
+| Authentication scaffolding (login, register, etc.)
 */
 require __DIR__.'/auth.php';

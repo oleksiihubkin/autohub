@@ -9,8 +9,29 @@ class Review extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id','car_id','rating','comment'];
+    /**
+     * Mass-assignable fields for the Review model.
+     */
+    protected $fillable = [
+        'user_id',
+        'car_id',
+        'rating',
+        'comment',
+    ];
 
-    public function user() { return $this->belongsTo(User::class); }
-    public function car()  { return $this->belongsTo(Car::class); }
+    /**
+     * Relationship: A review belongs to a single user (the author).
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Relationship: A review belongs to a single car.
+     */
+    public function car()
+    {
+        return $this->belongsTo(Car::class);
+    }
 }

@@ -16,50 +16,51 @@ use Database\Factories\ReviewFactory;
 class DatabaseSeeder extends Seeder
 {
     /**
-     * Seed the application's database.
+     * Seed the application's database with initial data.
      */
     public function run(): void
     {
-        // 1) Админ
+        // 1) Create an admin user
         User::factory()->create([
-            'name' => 'Admin',
-            'email' => 'admin@example.com',
-            'role' => 'admin',
+            'name'     => 'Admin',
+            'email'    => 'admin@example.com',
+            'role'     => 'admin',
             'password' => bcrypt('password'),
         ]);
 
-        // 2) Обычные пользователи
+        // 2) Create regular users
         $users = User::factory(3)->create(['role' => 'user']);
 
-        // 3) Фабрики (plants)
+        // 3) Create factories (plants)
         $plants = Factory::factory(3)->create();
 
-        // 4) Машины, привязанные к фабрикам
+        // 4) Create cars linked to each factory
         $plants->each(function (\App\Models\Factory $plant) {
-    CarFactory::new()
-        ->count(3)
-        ->create([
-            'factory_id' => $plant->id,
-        ]);
-});
+            CarFactory::new()
+                ->count(3)
+                ->create([
+                    'factory_id' => $plant->id,
+                ]);
+        });
 
-        // 5) Дилеры
+        // 5) Create dealers
         $dealers = Dealer::factory(5)->create();
 
-        // 6) Привязка дилеров к фабрикам (many-to-many), если есть связь factories()
-        // Закомментируй, если у модели Dealer нет связи factories()
+        // 6) Attach dealers to factories (many-to-many) if the relationship exists
+        // Safe to disable if Dealer model does not define factories()
         if (method_exists(Dealer::class, 'factories')) {
             $dealers->each(function (Dealer $dealer) use ($plants) {
-                // привяжем к 1–2 случайным фабрикам
+                // Attach dealer to 1–2 random factories
                 $dealer->factories()->sync(
                     $plants->random(rand(1, 2))->pluck('id')->toArray()
                 );
             });
         }
 
-        // 7) Пример отзывов: для первого пользователя создадим по отзыву на несколько машин
+        // 7) Create example reviews for the first regular user
         $anyUser = $users->first();
         $anyCars = Car::inRandomOrder()->take(3)->get();
+
         foreach ($anyCars as $car) {
             Review::create([
                 'user_id' => $anyUser->id,
