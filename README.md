@@ -172,23 +172,12 @@ POST /factories/{id}/assign-dealers
    git clone <https://github.com/oleksiihubkin/autohub>
    cd autohub
 
-2. Install dependencies
-   composer install
-   npm install
-
-3. Create environment file
-   cp .env.example .env
-   php artisan key:generate
-
-4. Set up the database
-
-Configure .env, then run:
+2. Set up the database
 
 php artisan migrate --seed
 
-5. Run the app
+3. Run the app
    php artisan serve
-   npm run dev
 
 🔑 Default Admin Login
 email: admin@example.com
